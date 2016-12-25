@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<!-- saved from url=(0052)http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+   
+   <meta name="Generator" content="Cosmo Create 1.0.3">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; Linux 2.4.7-10 i686) [Netscape]">
+   <title>SIMPLE 3.0 Full Description</title>
+</head>
+<body bgcolor="#CCFFFF">
+
+<h2>
+<font size="+1">Description of SIMPLE 3.0</font></h2>
+
+<hr>
+<h3>
+<i><font size="+0">Contents:</font></i></h3>
+<a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#Introduction">Introduction</a>
+<br><a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#Algorithm">Algorithm</a>
+<br><a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#Options">Options</a>
+<br><a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#Output">Output Files</a>
+<br><a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#References">References</a>
+<h4>
+<a name="Introduction"></a><i>Introduction</i></h4>
+Simple sequences are formed by repeats of short motifs. An important mechanism
+for their generation is considered to be DNA slippage and misaligning during
+replication, recombination or repair (Levinson and Gutman, 1987). Although
+they may be formed by perfect tandem repeats, such as microsatellites,
+the vast majority of them are cryptic. In coding sequences simple sequences
+are often made up of trinucleotide repeats. These trinucleotide repeat
+regions may give rise for example to extented poly-glutamine regions, observed
+in some transcription factors and in proteins involved in deurogenerative
+diseases (Hancock, 1993; Albà et al., 1999).
+<p>SIMPLE v.3.0 identifies clusters of short sequence motifs (1 to 4 elements)
+and represents a development of SIMPLE34 (Hancock and Armstrong, 1994).
+It has been written in C++ and it is easily portable to a variety of platforms.
+While based in the same algorithm than SIMPLE (Tautz et al., 1986) and
+SIMPLE34 the new program is significantly faster and provides new options
+for the study of simple sequences in DNA, RNA and protein sequences.
+</p><h4>
+<a name="Algorithm"></a><i>Algorithm</i></h4>
+<a name="algorithm1"></a><u>Measure of the level of sequence simplicity</u>
+<p>Clustered short motifs ranging from 1 to 4 elements are searched within
+a window surrounding the motif. The elements are nucleotides for nucleic
+acids and amino acids for proteins. For each repeat of the motif found
+within the window a score is awarded to the first element of the motif
+(reference element). The score accumulated by this first element, termed
+simplicity score (SS) therefore reflects the level of clustering of the
+motif within the window. By averaging the scores for all elements in the
+sequence an overall Simplicity Factor (SF) is calculated for the sequence.
+This is then divided by the mean of the corresponding SF for a number of
+random sequences of the same composition and length as the test sequence
+to give a relative measure of motif clustering within the sequence. This
+parameter is termed Relative Simplicity Factor (RSF). The calculation of
+the standard deviation of the SF of the random sequences allows standard
+errors and confidence limits to be calculated to assess whether the test
+sequence contains more (or less) clustering of short motifs than expected
+randomly.
+</p><p><a name="algorithm2"></a><u>Identification of clustered short sequence
+motifs</u>
+</p><p>The identification of motifs reaching high scores is performed on a
+score-by-score basis. The frequency distribution of scores within the test
+(fo) and random sequence (fe) is calculated and for each different score
+(integers) a significance value is obtained: S=1-(fe/fo) By default the
+program regards a score with a significance of 0.9, corresponding to a
+ten times greater value of fo than fe, as significantly high. The motifs
+and segments (windows surrounding the reference element) reaching significantly
+high scores are recorded.
+</p><h4>
+<a name="Options"></a><i>Options</i></h4>
+<a name="input"></a><u>1. Input sequence</u>
+<p>The program retrieves nucleic acid or protein sequences from a file
+specified by the user. The file types accepted are GenBank, EMBL, Swissprot,
+fasta format, plain sequence (may include numbering).
+<br>Three different identifiers present in the database entry files are
+parsed:
+</p><p>Gene or protein name:
+</p><p>GenBank: LOCUS
+<br>EMBL, SwissProt: ID
+</p><p>Accession number:
+</p><p>GenBank: ACCESSION
+<br>EMBL, SwissProt: AC
+</p><p>Short description:
+</p><p>GenBank: DESCRIPTION
+<br>EMBL, SwissProt: DE
+<br>&nbsp;
+</p><p><a name="conversion"></a><u>2. Conversion of a four-letter code nucleic
+acid sequence into a purine/pyrimidine sequence</u>
+</p><p>This option re-codes the sequence according to the purine(A,G) or pyrimidine
+(C,T,U) nature of the bases. A possible application relates to the discrimination
+between coding and non-coding sequences in genomic sequence fragments,
+as there is evidence that the latter contain a significantly larger amount
+of purine- and pyrimidine-rich clusters (Almirantis 1998).
+</p><p><a name="scoring"></a><u>3. Scores for short motifs of different length</u>
+</p><p>Different weight can be assigned to the repetition of short motifs of
+different lengths (1 to 4 elements). This makes it possible to perform
+a restricted analysis of particular types of repeats, for example trinucleotides,
+which are often clustered in coding sequences, or repeats of one or two
+amino acids in proteins. By repeatedly running the program with different
+scoring schemes one can obtain different results which will highlight the
+types of short motifs present in the low-complexity regions of a sequence.
+</p><p><a name="window"></a><u>4. Length of the window</u>
+</p><p>For nucleic acid sequences the length of the window within each repeats
+of short motifs are searched if by default 64 bp, which means that it expands
+32 nucleotides 5' and 32 nucleotides 3' from the motif. For protein sequences
+the default window length has been set up at 10 amino acids. Increasing
+these default values may allow detection of longer regions of simplicity
+and decreasing them makes it more likely to detect very short repetitive
+sequences.
+</p><p><a name="NRandom"></a><u>5. Number of random sequences generated</u>
+</p><p>Random sequences of the same composition and length as the test sequence
+are generated to test whether the Simplicity Factor of the sequence is
+above the expectation under random distribution of the elements and whether
+specific short motifs show significant clustering (see algorithm). While
+for nucleic acid sequences the default value is set up at 10, for protein
+sequences is 100, to take into consideration the high degree of variation
+when randomizing relatively short sequences. It is not recommended to use
+less than 10 random sequences so that statistical significance can be tested.
+</p><p><a name="Method"></a><u>6. Randomization method</u>
+</p><p>Randomly shuffling the elements in the sequence ensures that the composition
+is completely preserved and that is the how randomization of protein sequences
+is always generated. However this may take considerable time for long nucleic
+acid sequences and therefore another option is provided which only considers
+the element frequency. The results obtained using both methods are practically
+identical for long sequences but shuffling of the elements is recommended
+for nucleic acid sequences which are shorter than 300 bp.
+</p><p>Nucleotide random sequences can also be generated using two other different
+rules which take into account positional constraints. The first makes use
+of dinucleotide frequencies within the sequence to generate random sequences
+according to a 2nd order Markov rule. This reflects the biased dinucleotide
+composition of DNA sequences (Nussinov 1984). In general it is observed
+that the Simplicity Factor of the sequence diminishes when using this rule,
+which indicates its usefulness in eliminating the noise due to biased dinucleotide
+frequency in the sequence. The second option is that randomization is carried
+out independently in three different frames. This can compensate for the
+different levels of evolutionary constraint acting upon sequences in synonymous
+and non-synonymous codon positions and it may be useful in the analysis
+of coding sequences.
+</p><p><a name="Stringency"></a><u>7. Stringency to identify short motifs which
+show significant clustering</u>
+</p><p>By default this parameter is set up at 0.9, which means that only those
+motifs which reach a score at least ten times higher than in the (averaged)
+random sequences will be considered as clustered <a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#algorithm2">(see
+algorithm)</a>. This level of stringency can be increased to 0.99 or 0.999
+to detect only long regions of clustered motifs such as long microsatellites.
+</p><p><a name="ss"></a><u>8. Simplicity scores along sequence</u>
+</p><p>The <a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#algorithm1">simplicity scores (SS)</a> for each position
+in the sequence can be obtained in a tabular form. The table can be used
+to obtain a graphical representation using any standard spreadsheet/statistics
+package. SSs are assigned to a central element in a sequence window, so
+a variable number of elements (depending on the window size) at the beginning
+and end of the sequence will not score for SSs.
+</p><h4>
+<a name="Output"></a><i>Output Files</i></h4>
+<u>1. S1 (Simplicity of the sequence)</u>
+<p>This file is assigned the name of the input file with the extension
+.S1. It contains general information on the sequence such as sequence name,
+accession number and description, element frequency, length; parameters
+used in the calculation of simplicity; the Simplicity Factor (SF) and Relative
+Simplicity Factor (SF test/SF random) and confidence limits (0.95 and 0.99)
+to assess whether the test sequence contains significant clustering of
+short motifs (simple sequences) <a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#algorithm1">(see algorithm).</a>
+</p><p><u>2. S2 (Clustered Short Motifs and Segments)</u>
+</p><p>This file is assigned the name of the input file with the extension
+.S2. It shows the short sequence motifs (1 to 4 elements) which show significant
+clustering together with the window within which the clustering was detected
+<a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#algorithm2">(see
+algorithm)</a>. The position of the elements in the sequence is specified
+and a sum of the different motifs appears at the end of the file. One has
+to consider that the length of the motifs shown will be the longest one
+for which a score other than 0 was assigned. So if we decided to give a
+weight of 2 to motifs of three elements and a weight of 1 to motifs of
+four elements only motifs of four elements will be displayed. To focus
+on motifs of a specific length one needs to assign a score of 0 to the
+rest of them.
+</p><p><u>3. simpl_s <a href="http://www.biochem.ucl.ac.uk/bsm/SIMPLE/simple2.html#ss">(simplicity scores along sequence)</a></u>
+- OPTIONAL
+</p><h4>
+<a name="References"></a><i>References</i></h4>
+Albà, M.M., Laskowski, R.A., Hancock, J.M. (2002). Detecting cryptically
+simple protein sequences using the SIMPLE algorithm. Bioinformatics, Vol.
+18: 672-688.
+<br>Tautz, D., Trick, M., Dover, G.A. (1986) Nature 322 (14), 652-656.
+<br>Hancock, J.M., Armstrong, J.S. (1994) SIMPLE34: an improved and enhanced
+implementation for VAX and Sun computers of the SIMPLE algorithm for analysis
+of clustered repetitive motifs in nucleotide sequences. CABIOS 10, 67-70.
+<br>Levinson, G. and Gutman, G.A. (1987). Slipped-strand mispairing: a
+major mechanism for DNA sequence evolution. Mol. Biol. Evol. 4: 203-221.
+<br>Almirantis, Y. (1999) A standard deviation based quantification differentiates
+coding from non-coding DNA sequences and gives insight to their evolutionary
+history. J. Theor. Biol. 196 (3): 235-242.
+<br>Nussinov, R. (1984) Strong doublet preferences in nucleotide sequences
+and DNA geometry. J. Mol. Evol. 20: 111-119.
+<br>Hancock, J.M. (1993) Evolution of sequence repetition and gene duplications
+in the TATA-binding protein TBP (TFIID). Nucleic Acids Res. 21: 2823-2830.
+<br>Albà, M.M., Santibáñez-Koref, M.F., Hancock, J.M.
+(1999). Amino acid reiterations in yeast are over-represented in particular
+classes of proteins and show evidence of a slippage-like mutational process.
+Journal of Molecular Evolution, Vol. 49 (6):789-797.
+<br>&nbsp;
+
+
+</body></html>
